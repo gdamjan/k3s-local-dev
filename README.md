@@ -24,7 +24,7 @@ install -Dm644 ~/.config/containers/registries.conf.d/ ./podman/50-search-docker
 ## tl;dr;
 
 I want to customize the default `k3s` install with some enhancements and my opinions,
-for the local development use-case. We gonna run a local docker image registry too.
+to enhance the local development use-case. We gonna run a local docker image registry too.
 I prefer podman to docker for image building.
 
 
@@ -43,7 +43,7 @@ Instead, the `.internal` private TLD has been standardized exactly for this purp
 This will change how pods and services are named and resolved.
 
 
-## Make the cluster available to non-root users - `kubeconfig.yaml`
+## Make the cluster available to non-root users - [`kubeconfig.yaml`](./k3s/kubeconfig.yaml)
 
 Allow anyone in the `wheel` unix group to have access to the k3s `k3s.yaml` kube-config file.
 By default `/etc/rancher/k3s/k3s.yaml` is readable by root only.
