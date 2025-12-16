@@ -1,0 +1,11 @@
+# /etc/rancher/k3s/registries.yaml
+#
+# https://docs.k3s.io/installation/private-registry
+#
+mirrors:
+  "registry.localhost":
+    endpoint:
+      - "http://registry.localhost:80"
+configs:
+  "registry.localhost":
+    insecure_skip_verify: true

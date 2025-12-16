@@ -1,0 +1,5 @@
+# /etc/rancher/k3s/config.yaml.d/cluster-domain.yaml
+#
+# replace the default .local with .internal (.local is reserved for mDNS, see RFC 6762)
+#
+cluster-domain: cluster.internal
