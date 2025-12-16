@@ -53,7 +53,7 @@ Anyone in the `wheel` group can now have `export KUBECONFIG=/run/k3s.yaml` and r
 kubernetes tool, like `kubectl`, `k9s`, etc…
 
 
-## Running a local registry - `registries.yaml`
+## Running a local registry - [`registries.yaml`](./k3s/registries.yaml)
 
 For local development, we need a way to run our own applications in the local cluster.
 So we need to build our own custom images and provide them to the cluster. Kubernetes/k3s
@@ -87,7 +87,10 @@ k3s kubectl delete pod hello
 ```
 
 > [!NOTE]
-> Configure `registry.localhost` as an [insecure registry](https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md) in podman/skopeo. Which we did with that `50-k3s-local-registry.conf` file.
+> Configure `registry.localhost` as an
+> [insecure registry](https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md)
+> in podman/skopeo. Which we did with that [`50-k3s-local-registry.conf`](./podman/50-k3s-local-registry.conf)
+> config file.
 
 
 #### With `docker`:
