@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: docker-registry
-        image: registry:3
+        image: registry-image
         ports:
         - containerPort: 5000
           protocol: TCP

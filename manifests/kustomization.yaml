@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - pvc.yaml
+  - service.yaml
+  - ingress.yaml
+
+commonLabels:
+  app: docker-registry
+
+images:
+  - name: registry-image
+    newName: docker.io/library/registry
+    newTag: 3
