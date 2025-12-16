@@ -87,9 +87,9 @@ k3s kubectl delete pod hello
 ```
 
 > [!NOTE]
-> Configure `registry.localhost` as an
+> To configure `registry.localhost` as an
 > [insecure registry](https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md)
-> in podman/skopeo. Which we did with that [`50-k3s-local-registry.conf`](./podman/50-k3s-local-registry.conf)
+> in podman/skopeo, we have used the [`50-k3s-local-registry.conf`](./podman/50-k3s-local-registry.conf)
 > config file.
 
 
@@ -110,7 +110,7 @@ to use 3rd-party kubernetes tools.
 
 #### k9s / kubectl
 
-Setting `--kubeconfig` or exporting the `KUBECONFIG` environment variable, works for both:
+Using the `--kubeconfig` cli option or exporting the `KUBECONFIG` environment variable, works for both:
 
 ```
 k9s --kubeconfig /run/k3s.yaml
