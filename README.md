@@ -1,12 +1,13 @@
 # `K3s for local development`
 
-> [K3s](https://docs.k3s.io/) - Lightweight Kubernetes. Easy to install, half the memory, all in a binary of less than 100 MB.
+> [K3s](https://docs.k3s.io/) - Lightweight Kubernetes.
+> Easy to install, half the memory, all in a binary of less than 100 MB.
 
 ## Quickstart
 ```
-sudo install -m644 ./k3s/cluster-domain.yaml /etc/rancher/k3s/config.yaml.d/
-sudo install -m644 ./k3s/kubeconfig.yaml /etc/rancher/k3s/config.yaml.d/
-sudo install -m644 ./k3s/registries.yaml /etc/rancher/k3s/
+sudo install -Dm644 -t /etc/rancher/k3s/config.yaml.d/ ./k3s/cluster-domain.yaml
+sudo install -Dm644 -t /etc/rancher/k3s/config.yaml.d/ ./k3s/kubeconfig.yaml
+sudo install -Dm644 -t /etc/rancher/k3s/ ./k3s/registries.yaml
 
 sudo systemctl restart k3s
 
