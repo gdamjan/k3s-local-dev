@@ -23,49 +23,61 @@ install -Dm644 ~/.config/containers/registries.conf.d/ ./podman/50-search-docker
 
 ## tl;dr;
 
-I want to customize the default `k3s` install with some enhancements and my opinions,
-to enhance the local development use-case. We gonna run a local docker image registry too.
-I prefer podman to docker for image building.
-
+I want to customize the default k3s installation by applying a set of enhancements and
+opinionated choices aimed at improving the local development experience. As part of this
+setup, we will also run a local container image registry. For building container images,
+I prefer using Podman instead of Docker.
 
 # Explainer
 
 ## Don't use `.local` for the cluster domain - [`cluster-domain.yaml`](./k3s/cluster-domain.yaml)
 
-This config file changes the `.local` <abbr title="Top-Level Domain">TLD</abbr> with
-`.internal` for the cluster domain of k3s. With that, the domain used by the cluster
-is `cluster.internal` instead of `cluster.local`.
+This configuration file replaces the default `.local` <abbr title="Top-Level Domain">TLD</abbr>
+used by k3s with `.internal` as the cluster domain. As a result, all cluster DNS names will be
+rooted under `cluster.internal` rather than `cluster.local`.
 
-Reason is, `.local` is reserved for the mDNS protocol, and really shouldn't be used for anything
-else (see [RFC 6762](https://datatracker.ietf.org/doc/html/rfc6762#section-3)).
-Instead, the `.internal` private TLD has been standardized exactly for this purpose.
+The rationale behind this change is that `.local` is formally reserved for the mDNS protocol and
+should not be used for conventional DNS resolution or other purposes
+(see [RFC 6762](https://datatracker.ietf.org/doc/html/rfc6762#section-3)).
+Using `.local` outside of mDNS can lead to name resolution conflicts, unexpected behavior, and
+hard-to-debug networking issues—especially on developer machines where mDNS is commonly enabled.
 
-This will change how pods and services are named and resolved.
+By contrast, `.internal` is a private TLD specifically intended for internal networking and
+non-public DNS namespaces, making it a better and more standards-compliant choice for Kubernetes clusters.
 
+Note that changing the cluster domain affects how pod and service DNS names are constructed and
+resolved throughout the cluster, so all workloads will transparently use the new
+`cluster.internal` suffix.
 
 ## Make the cluster available to non-root users - [`kubeconfig.yaml`](./k3s/kubeconfig.yaml)
 
-Allow anyone in the `wheel` unix group to have access to the k3s `k3s.yaml` kube-config file.
-By default `/etc/rancher/k3s/k3s.yaml` is readable by root only.
-Let's have it generated in `/run`, readable by the `wheel` group too.
+This configuration allows members of the `wheel` Unix group to access the k3s kubeconfig file.
+By default, the k3s kubeconfig (`/etc/rancher/k3s/k3s.yaml`) is readable only by the root user,
+which unnecessarily restricts day-to-day cluster interaction.
 
-Anyone in the `wheel` group can now have `export KUBECONFIG=/run/k3s.yaml` and run any
-kubernetes tool, like `kubectl`, `k9s`, etc…
+Instead, the kubeconfig is generated under `/run` with read permissions granted to the `wheel` group.
+This makes the cluster accessible to trusted non-root users without compromising overall system security.
 
+As a result, any user in the `wheel` group can simply set:
+```
+export KUBECONFIG=/run/k3s.yaml
+```
+and use standard Kubernetes tooling such as `kubectl`, `k9s`, and similar clients.
 
-## Running a local registry - [`registries.yaml`](./k3s/registries.yaml)
+## Running a local registry – [`registries.yaml`](./k3s/registries.yaml)
 
-For local development, we need a way to run our own applications in the local cluster.
-So we need to build our own custom images and provide them to the cluster. Kubernetes/k3s
-can't use images from the local docker or podman storage, so we need to push these
-images to a local registry instead, and make kubernetes use them from there.
+For local development, we need a reliable way to run our own applications inside the cluster.
+This typically involves building custom container images and making them available to k3s.
+Since Kubernetes (and k3s) cannot directly consume images from the local Docker or Podman
+image stores, these images must be pushed to a container registry that the cluster can pull from.
 
-We can run the registry inside kubernetes 😉, and a suitable one is the 
-[Distribution Registry](https://distribution.github.io/distribution/) project
-(see the `./manifests` directory).
+To keep everything self-contained, we can run a registry inside the Kubernetes cluster itself 😉.
+A well-suited option for this purpose is the [Distribution Registry](https://distribution.github.io/distribution/)
+project, with the required manifests located in the `./manifests` directory.
 
-The `registries.yaml` config file tells the `k3s` cluster that the local
-registry (`registry.localhost`) will not need https, and is running on port 80/http.
+The `registries.yaml` configuration file informs k3s about this local registry. Specifically,
+it declares that the registry at `registry.localhost` is reachable over plain HTTP on port 80 and
+does not require HTTPS, allowing the cluster to pull images from it without additional TLS configuration.
 
 
 ### Use the local registry:
