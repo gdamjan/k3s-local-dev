@@ -100,7 +100,7 @@ docker tag demo registry.localhost/demo:latest
 docker push registry.localhost/demo:latest
 ```
 > [!NOTE]
-> Configure `registry.localhost` as an [insecure registry](https://docs.docker.com/registry/insecure/)
+> Configure `registry.localhost` as an [insecure registry](https://docs.docker.com/registry/insecure/).
 
 
 ## Accessing k3s
