@@ -86,6 +86,8 @@ does not require HTTPS, allowing the cluster to pull images from it without addi
 ```
 podman build -t demo .
 podman push demo docker://registry.localhost/demo:latest
+
+k3s kubectl run demo --image=registry.localhost/demo
 ```
 
 #### With `skopeo`:
