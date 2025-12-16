@@ -139,6 +139,25 @@ kubectl get pods -A
 k9s
 ```
 
+
+## Host DNS integration
+
+FIXME:
+```
+sudo install -Dm644 -t /etc/systemd/dns-delegate.d/ ./host/cluster-internal.dns-delegate
+```
+
+```
+$ resolvectl query metrics-server.kube-system.svc.cluster.internal
+metrics-server.kube-system.svc.cluster.internal: 10.43.240.107 -- link: cni0
+```
+
+```
+$ resolvectl query registry.docker-registry.svc.cluster.internal
+registry.docker-registry.svc.cluster.internal: 10.43.8.73 -- link: cni0
+```
+
+
 ## References:
 
 Alternatives to a local registry are:
@@ -153,6 +172,10 @@ Tools:
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/)
 - [podman](https://podman.io/)
 - [skopeo](https://github.com/containers/skopeo)
+
+Configurations:
+- [dns-delegate.d](https://www.freedesktop.org/software/systemd/man/258/systemd.dns-delegate.html)
+
 
 > [!WARNING]
 > Tested on Arch Linux only. Arch Linux provides k3s and podman in pristine state, so the only customizations
