@@ -30,7 +30,7 @@ I prefer podman to docker for image building.
 
 # Explainer
 
-## Don't use `.local` for the cluster domain - `cluster-domain.yaml`
+## Don't use `.local` for the cluster domain - [`cluster-domain.yaml`](./k3s/cluster-domain.yaml)
 
 This config file changes the `.local` <abbr title="Top-Level Domain">TLD</abbr> with
 `.internal` for the cluster domain of k3s. With that, the domain used by the cluster
