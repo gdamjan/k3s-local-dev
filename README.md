@@ -15,17 +15,18 @@ sudo systemctl restart k3s
 k3s kubectl create namespace docker-registry
 k3s kubectl apply -f manifests/ --namespace docker-registry
 
+# configure podman/skopeo
 install -Dm644 ~/.config/containers/registries.conf.d/ ./podman/50-k3s-local-registry.conf
 install -Dm644 ~/.config/containers/registries.conf.d/ ./podman/50-search-docker-io.conf
 ```
 
 
-## Explainer
+### tl;dr;
 
 I want to customize the default `k3s` install with some enhancements and my opinions,
 for the local development use-case. We gonna run a local docker image registry too.
 
-### `cluster-domain.yaml`
+## Don't use `.local` for the cluster domain - `cluster-domain.yaml`
 
 This config file changes the `.local` <abbr title="Top-Level Domain">TLD</abbr> with
 `.internal` for the cluster domain of k3s. With that, the domain used by the cluster
@@ -38,7 +39,7 @@ Instead, the `.internal` private TLD has been standardized exactly for this purp
 This will change how pods and services are named and resolved.
 
 
-### `kubeconfig.yaml`
+## Make the cluster available to non-root users - `kubeconfig.yaml`
 
 Allow anyone in the `wheel` unix group to have access to the k3s `k3s.yaml` kube-config file.
 By default `/etc/rancher/k3s/k3s.yaml` is readable by root only.
@@ -48,7 +49,7 @@ Anyone in the `wheel` group can now have `export KUBECONFIG=/run/k3s.yaml` and r
 kubernetes tool, like `kubectl`, `k9s`, etc…
 
 
-### Running a local registry - `registries.yaml`
+## Running a local registry - `registries.yaml`
 
 For local development, we need a way to run our own applications in the local cluster.
 So we need to build our own custom images and provide them to the cluster. Kubernetes/k3s
@@ -63,15 +64,15 @@ The `registries.yaml` config file tells the `k3s` cluster that the local
 registry (`registry.localhost`) will not need https, and is running on port 80/http.
 
 
-#### Using the local registry:
+### Using the local registry:
 
-##### With `podman`:
+#### With `podman`:
 ```
 podman build -t demo .
 podman push demo docker://registry.localhost/demo:latest
 ```
 
-##### With `skopeo`:
+#### With `skopeo`:
 ```
 skopeo copy docker://docker.io/alpine:3 docker://registry.localhost/alpine:3
 
@@ -82,7 +83,7 @@ k3s kubectl delete pod hello
 > [!NOTE]
 > Configure `registry.localhost` as an [insecure registry](https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md) in podman.
 
-##### With `docker`:
+#### With `docker`:
 ```
 docker build -t demo .
 docker tag demo registry.localhost/demo:latest
