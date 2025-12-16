@@ -1,0 +1,8 @@
+# /etc/systemd/dns-delegate.d/cluster-internal.dns-delegate
+# see `man 5 systemd.dns-delegate`
+#
+
+# Default values from https://docs.k3s.io/cli/server#networking
+[Delegate]
+DNS=10.43.0.10
+Domains=cluster.internal

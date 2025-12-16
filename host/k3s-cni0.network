@@ -1,0 +1,17 @@
+# /etc/systemd/network/k3s-cni0.network
+# Assuming cni0 is the k3s interface add a DNS Route to its CoreDNS service
+# so that the .cluster.internal zone can be resolved by the hosts systemd-resolved
+[Match]
+Name=cni0
+Type=bridge
+Kind=bridge
+
+[Link]
+RequiredForOnline=no
+ActivationPolicy=always-up
+
+[Network]
+# Default values from https://docs.k3s.io/cli/server#networking
+Description=DNS routing to the internal k3s coredns service (cni0)
+Domains=~cluster.internal
+DNS=10.43.0.10
