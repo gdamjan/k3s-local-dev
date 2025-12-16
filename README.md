@@ -14,6 +14,9 @@ sudo systemctl restart k3s
 
 k3s kubectl create namespace docker-registry
 k3s kubectl apply -f manifests/ --namespace docker-registry
+
+install -Dm644 ~/.config/containers/registries.conf.d/ ./podman/50-k3s-local-registry.conf
+install -Dm644 ~/.config/containers/registries.conf.d/ ./podman/50-search-docker-io.conf
 ```
 
 
@@ -45,7 +48,7 @@ Anyone in the `wheel` group can now have `export KUBECONFIG=/run/k3s.yaml` and r
 kubernetes tool, like `kubectl`, `k9s`, etc…
 
 
-### `registries.yaml`
+### Running a local registry - `registries.yaml`
 
 For local development, we need a way to run our own applications in the local cluster.
 So we need to build our own custom images and provide them to the cluster. Kubernetes/k3s
@@ -60,12 +63,12 @@ The `registries.yaml` config file tells the `k3s` cluster that the local
 registry (`registry.localhost`) will not need https, and is running on port 80/http.
 
 
-#### Pushing to the local registry:
+#### Using the local registry:
 
 With `podman`:
 ```
-podman build -t test .
-podman push test docker://registry.localhost/test:latest
+podman build -t demo .
+podman push demo docker://registry.localhost/demo:latest
 ```
 
 With `skopeo`:
@@ -77,13 +80,22 @@ k3s kubectl delete pod hello
 ```
 
 > [!NOTE]
-> We need to configure `http://registry.localhost` as [insecure registry](https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md) in podman.
+> Configure `registry.localhost` as an [insecure registry](https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md) in podman.
+
+With `docker`:
+```
+docker build -t demo .
+docker tag demo registry.localhost/demo:latest
+docker push registry.localhost/demo:latest
+```
+> [!NOTE]
+> Configure `registry.localhost` as an [insecure registry](https://docs.docker.com/registry/insecure/)
 
 
 ## References:
 
 Alternatives to a local registry are:
-- ttl.sh
-- hub.docker.com
-- quay.io
-- ghcr.io
+- [ttl.sh]
+- [hub.docker.com]
+- [quay.io]
+- [ghcr.io]
