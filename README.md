@@ -140,4 +140,4 @@ Tools:
 
 > [!WARNING]
 > Tested on Arch Linux only. Arch Linux provides k3s and podman in pristine state, so the only customizations
-> done by my config files. Other distros might apply their own opinions out from the package.
+> done, are by my config files. Other distros might apply their own opinions out from the package.
