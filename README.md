@@ -13,7 +13,7 @@ sudo install -Dm644 -t /etc/rancher/k3s/ ./k3s/registries.yaml
 sudo systemctl restart k3s
 
 k3s kubectl create namespace docker-registry
-k3s kubectl apply -f manifests/ --namespace docker-registry
+k3s kubectl apply -k manifests/ --namespace docker-registry
 
 # configure podman/skopeo
 install -Dm644 ~/.config/containers/registries.conf.d/ ./podman/50-k3s-local-registry.conf
