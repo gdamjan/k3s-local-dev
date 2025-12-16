@@ -21,10 +21,14 @@ install -Dm644 ~/.config/containers/registries.conf.d/ ./podman/50-search-docker
 ```
 
 
-### tl;dr;
+## tl;dr;
 
 I want to customize the default `k3s` install with some enhancements and my opinions,
 for the local development use-case. We gonna run a local docker image registry too.
+I prefer podman to docker for image building.
+
+
+# Explainer
 
 ## Don't use `.local` for the cluster domain - `cluster-domain.yaml`
 
@@ -64,7 +68,7 @@ The `registries.yaml` config file tells the `k3s` cluster that the local
 registry (`registry.localhost`) will not need https, and is running on port 80/http.
 
 
-### Using the local registry:
+### Use the local registry:
 
 #### With `podman`:
 ```
@@ -73,6 +77,8 @@ podman push demo docker://registry.localhost/demo:latest
 ```
 
 #### With `skopeo`:
+`skopeo` is a low-level cli utility that performs various operations on container images and image repositories.
+
 ```
 skopeo copy docker://docker.io/alpine:3 docker://registry.localhost/alpine:3
 
@@ -81,7 +87,8 @@ k3s kubectl delete pod hello
 ```
 
 > [!NOTE]
-> Configure `registry.localhost` as an [insecure registry](https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md) in podman.
+> Configure `registry.localhost` as an [insecure registry](https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md) in podman/skopeo. Which we did with that `50-k3s-local-registry.conf` file.
+
 
 #### With `docker`:
 ```
@@ -93,6 +100,26 @@ docker push registry.localhost/demo:latest
 > Configure `registry.localhost` as an [insecure registry](https://docs.docker.com/registry/insecure/)
 
 
+## Accessing k3s
+
+While k3s comes with its own kubectl (`k3s kubectl`) that works out of the box, sometimes we need
+to use 3rd-party kubernetes tools.
+
+#### k9s / kubectl
+
+Setting `--kubeconfig` or exporting the `KUBECONFIG` environment variable, works for both:
+
+```
+k9s --kubeconfig /run/k3s.yaml
+kubectl --kubeconfig /run/k3s.yaml get pods -A
+```
+
+```
+export KUBECONFIG=/run/k3s.yaml
+kubectl get pods -A
+k9s
+```
+
 ## References:
 
 Alternatives to a local registry are:
@@ -100,3 +127,14 @@ Alternatives to a local registry are:
 - [hub.docker.com](https://hub.docker.com) - Docker Hub
 - [quay.io](https://quay.io) - Redhat supported registry, alternative to docker hub
 - [ghcr.io](https://docs.github.com/en/packages) - Github Packages provides an image registry
+
+Tools:
+- [k3s](https://k3s.io/)
+- [k9s](https://k9scli.io/)
+- [kubectl](https://kubernetes.io/docs/reference/kubectl/)
+- [podman](https://podman.io/)
+- [skopeo](https://github.com/containers/skopeo)
+
+> [!WARNING]
+> Tested on Arch Linux only. Arch Linux provides k3s and podman in pristine state, so the only customizations
+> done by my config files. Other distros might apply their own opinions out from the package.
