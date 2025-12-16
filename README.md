@@ -65,13 +65,13 @@ registry (`registry.localhost`) will not need https, and is running on port 80/h
 
 #### Using the local registry:
 
-With `podman`:
+##### With `podman`:
 ```
 podman build -t demo .
 podman push demo docker://registry.localhost/demo:latest
 ```
 
-With `skopeo`:
+##### With `skopeo`:
 ```
 skopeo copy docker://docker.io/alpine:3 docker://registry.localhost/alpine:3
 
@@ -82,7 +82,7 @@ k3s kubectl delete pod hello
 > [!NOTE]
 > Configure `registry.localhost` as an [insecure registry](https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md) in podman.
 
-With `docker`:
+##### With `docker`:
 ```
 docker build -t demo .
 docker tag demo registry.localhost/demo:latest
@@ -95,7 +95,7 @@ docker push registry.localhost/demo:latest
 ## References:
 
 Alternatives to a local registry are:
-- [ttl.sh]
-- [hub.docker.com]
-- [quay.io]
-- [ghcr.io]
+- [ttl.sh](https://ttl.sh) - anonymous & ephemeral docker image registry
+- [hub.docker.com](https://hub.docker.com) - Docker Hub
+- [quay.io](https://quay.io) - Redhat supported registry, alternative to docker hub
+- [ghcr.io](https://docs.github.com/en/packages) - Github Packages provides an image registry
