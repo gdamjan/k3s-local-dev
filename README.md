@@ -107,7 +107,9 @@ k3s kubectl delete pod hello
 > config file.
 
 
-#### With `docker`:
+#### With `docker`
+
+Docker is stupid, it has to re-tag an image to push it to a remote registry:
 ```
 docker build -t demo .
 docker tag demo registry.localhost/demo:latest
